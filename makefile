@@ -12,9 +12,9 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = autenticacao.x
 
-TARGETS_SVC.c = autenticacao_svc.c autenticacao_server.c   
-TARGETS_CLNT.c = autenticacao_clnt.c autenticacao_client.c   
-TARGETS = autenticacao.h   autenticacao_clnt.c autenticacao_svc.c autenticacao_client.c autenticacao_server.c
+TARGETS_SVC.c = autenticacao_svc.c autenticacao_server.c autenticacao_xdr.c 
+TARGETS_CLNT.c = autenticacao_clnt.c autenticacao_client.c autenticacao_xdr.c 
+TARGETS = autenticacao.h autenticacao_xdr.c autenticacao_clnt.c autenticacao_svc.c autenticacao_client.c autenticacao_server.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)

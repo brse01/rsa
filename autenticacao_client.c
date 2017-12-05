@@ -3,17 +3,22 @@
  * These are only templates and you can use them
  * as a guideline for developing your own functions.
  */
+
 #include <time.h>
 #include "autenticacao.h"
 #include "rsa.c"
 #include "funcoes.c"
 
+	ll d, e,p,q,mensagem,msgCifradaDaHash;
+    ll int n,m,hashMensagem,mensagemCriptografada;    
+    char hash[]="hash.txt";
+
 void
 program_9(char *host)
 {
 	CLIENT *clnt;
-	int  *result_1;
-	char *troca_9_arg;
+	aux  *result_1;
+	aux  troca_9_arg;
 
 #ifndef	DEBUG
 	clnt = clnt_create (host, PROGRAM, VERSION, "udp");
@@ -22,71 +27,56 @@ program_9(char *host)
 		exit (1);
 	}
 #endif	/* DEBUG */
-	//(e,n) par de chave pública
-    //(d,n) par de chave privada
-    long long d, e,p,q;
-    long long int n,m;
 
-    char hash[]="hash.txt";
-    char numero[]="num.txt";
-    char translado[]="translado.txt";
-    
-    srand((unsigned)time(NULL));	    
-    while (1)
-    {
-        p = 2+rand()%100; // Números aleatórios no intervalo [2,101].
-        q = 2+rand()%100; // Números aleatórios no intervalo [2,101].
-        n = p * q;
-        if (Miller(p,10) && Miller(q,10))
-        {
-            break;
-        }
-    }    
+ 	
+	srand((unsigned)time(NULL));	    
+	//seleciona os número p,q primos de forma aleatoria utilizando o algoritmo de Miller-Rabin.    
+    escolherPrimos(&p,&q,&n);
     // Computa a função phi(n) = (p - 1) * (q - 1)
     m = (p - 1) * (q - 1);
     // Escolha um inteiro "e" , 1 < "e" < phi(n), tal que, "e" e phi(n) sejam primos
     // entre si.
     e = 2;
-    while (gcd(m, e) > 1)
-    {
-        e = e + 1;
-    }            
+    primosEntreSI(&m,&e);        
     // "d" seja inverso multiplicativo de "e"
     d = modInverse(e, m);
-    // MENSAGEM    
-    long long mensagem;
+    // MENSAGEM        
+    int op=1;
+    while(op){
     printf("Digite um número\n");
     scanf("%lld",&mensagem);
+
     // INSERINDO NO ARQUIVOO    
-    insertNumero(mensagem,numero);    
-    long long int hashMensagem;
+    insertNumero(mensagem,hash);    
     // RODANDO A ROTINA PARA CALCULAR O HASHh
     rotina();        
     // CARREGANDO O HASH
-    readNumero(hash,&hashMensagem);    
+    readNumero(hash,&hashMensagem);        
     // AGORA VAMOS ENCRIPTAR A HASH DA MENSAGEM    
-    ll msgCifradaDaHash = square_multiply(hashMensagem,e, n);
-    // CIFRANDO A MESAGEM EM SÍ            
-    ll int mensagemCriptografada =square_multiply(mensagem,e, n); 
-    //printf("[Cliente] %lld %lld %lld\n",mensagemCriptografada,e,n);           
-    // AGORA VAMOS COLOCAR DENTRO DO ARQUIVO TRANSOLADO PARA PEGAR NO SERVIDOR
-    insert(mensagemCriptografada,hashMensagem,msgCifradaDaHash,d,n,translado);    
-    
-    // AGORA NO SERVIDOR IRA OCORRER A VERIFICAÇÃO
-	result_1 = troca_9((void*)&troca_9_arg, clnt);
-	if (result_1 == (int *) NULL) {
+     msgCifradaDaHash = square_multiply(hashMensagem,e, n);
+     // CIFRANDO A MESAGEM EM SÍ            
+     mensagemCriptografada =square_multiply(mensagem,e, n); 
+     
+     troca_9_arg.mensageCriptografada=mensagemCriptografada;
+     troca_9_arg.hashMensagem =hashMensagem;
+     troca_9_arg.hashDaMensagemCriptografada=msgCifradaDaHash;
+     troca_9_arg.d=d;
+     troca_9_arg.n=n;    
+
+	result_1 = troca_9(&troca_9_arg, clnt);
+	if (result_1 == (aux *) NULL) {
 		clnt_perror (clnt, "call failed");
-	}else{
-        if(*result_1 == 1){
-            printf("Autenticado\n");
-        }else{
-            printf("Não Autenticado\n");
-        }
-    }
+	}
+	printf("Deseja enviar mais uma mensagem ? [1-SIM OU 0-NÃO]\n");
+	scanf("%d",&op);
+}
+printf("# Obrigado volte sempre #\n");	
+printf("[ Desenvolvimento: Bruno Sousa e Francisco Antonio ]\n");
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
 }
+
 
 int
 main (int argc, char *argv[])

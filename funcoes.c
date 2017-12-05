@@ -62,7 +62,7 @@ void read(long long int *dado,long long int *hash,long long *msgCifrada, long lo
 	FILE* arquivo = openFile(2,url);		
 	while((fscanf(arquivo,"%lld %lld %lld %lld %lld\n",dado,hash, msgCifrada,d,n))!=EOF ){		
 	}
-	printf("[Na hora da LEITURA] %lld\n",*d);
+	//printf("[Na hora da LEITURA] %lld\n",*d);
 	closeFile(arquivo);
 }
 // FUNÇÃO QUE LER E RETORNA O NUMERO QUE ESTÁ EM UM ARQUIVO

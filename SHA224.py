@@ -1,7 +1,7 @@
 import hashlib
 import sys
 
-arquivo = open('num.txt', 'r')
+arquivo = open('hash.txt', 'r')
 primeira_linha = arquivo.readline()
 arquivo.close()
 hash_object = hashlib.sha224(primeira_linha.encode('utf-8'))

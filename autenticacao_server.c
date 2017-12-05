@@ -8,36 +8,38 @@
 #include "rsa.c"
 #include "funcoes.c"
 
-int *
-troca_9_svc(void *argp, struct svc_req *rqstp)
+aux *
+troca_9_svc(aux *argp, struct svc_req *rqstp)
 {
+	static aux  result;
 	char hash[]="hash.txt";
-    char numero[]="num.txt";
-    char translado[]="translado.txt";
-
-	static int  result;	
-	long long msgCifrada,d;
-	long long int n,hashTransporte,hashComparacao,mensagemCriptografada;
-	// LENDO OS DADOS
-	read(&mensagemCriptografada,&hashTransporte,&msgCifrada,&d,&n,translado);
-	//printf("[Servidor]  %lld %lld %lld\n",mensagemCriptografada,d,n);	
+	long long int hashComparacao;
+	/*
+	printf("mensageCriptografada %ld\n",argp->mensageCriptografada);
+	printf("hashMensagem %ld\n",argp->hashMensagem);
+	printf("hashDaMensagemCriptografada %ld\n",argp->hashDaMensagemCriptografada);
+	printf("d %ld\n",argp->d);
+	printf("n %lld\n",argp->n);
+	*/
 	// DESCRIPTANDO OS DADOS	
-	long long msgDescriptada =square_multiply(mensagemCriptografada, d, n);	
+	long long msgDescriptada =square_multiply(argp->mensageCriptografada, argp->d, argp->n);	
+	//printf("%lld\n",msgDescriptada);
 	// DESCRIPTANDO A ASSINATURA
-	long long assinatura = square_multiply(msgCifrada, d, n);	
+	long long assinatura = square_multiply(argp->hashDaMensagemCriptografada, argp->d, argp->n);
 	// INSERINDO NUMERO PARA CALCULAR HASH
-	insertNumero(assinatura,numero);
+	insertNumero(assinatura,hash);
 	// RODANDO A ROTINA PARA CALCULAR O HASHh
     rotina();	
 	// RECUPERAR OS DADOS PARA A COMPARAR AS HASH
 	readNumero(hash,&hashComparacao);	
-	if(hashTransporte == hashComparacao){
-		printf("Servidor Autenticado a assinatura\n");
+
+	if(argp->hashMensagem == hashComparacao){
+		printf("Assinatura autenticada com sucesso\n");
 		printf("[Mensagem Enviada] %lld\n",msgDescriptada);
-		result = 1;		
+		//result = 1;		
 	}else{
-		result = 2;
-		printf("Servidor Não Autenticado a assinatura\n");
+		//result = 2;
+		printf("Assinatura não autenticada.\n");
 	}
 	return &result;
 }

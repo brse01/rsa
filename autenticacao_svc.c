@@ -20,7 +20,7 @@ static void
 program_9(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
-		int fill;
+		aux troca_9_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -32,8 +32,8 @@ program_9(struct svc_req *rqstp, register SVCXPRT *transp)
 		return;
 
 	case troca:
-		_xdr_argument = (xdrproc_t) xdr_void;
-		_xdr_result = (xdrproc_t) xdr_int;
+		_xdr_argument = (xdrproc_t) xdr_aux;
+		_xdr_result = (xdrproc_t) xdr_aux;
 		local = (char *(*)(char *, struct svc_req *)) troca_9_svc;
 		break;
 

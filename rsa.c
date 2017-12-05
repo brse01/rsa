@@ -146,6 +146,26 @@ long modInverse(ll a,ll int m)
     return x1;
 }
 
+void primosEntreSI(ll int *m,ll *e){
+    while (gcd(*m, *e) > 1)
+    {
+        (*e) = (*e) + 1;
+    }            
+}
+
+void escolherPrimos(ll *p, ll *q, ll int *n){
+    while (1)
+    {
+        *p = 2+rand()%100; // Números aleatórios no intervalo [2,101].
+        *q = 2+rand()%100; // Números aleatórios no intervalo [2,101].
+        *n = ((*p) * (*q));
+        if (Miller(*p,10) && Miller(*p,10))
+        {
+            break;
+        }
+    }    
+}
+
 /*
 int main()
 {
